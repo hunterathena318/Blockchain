@@ -1,5 +1,4 @@
-//pragma solidity 0.5.2;
-pragma solidity >=0.4.22 <0.9.0;
+pragma solidity 0.5.2;
 
 contract SafeMath {
   function safeAdd(uint a, uint b) public pure returns (uint c) {
@@ -222,4 +221,5 @@ contract PigERC20 is ERC20Interface, SafeMath, Owned, Deployer {
 //  }
 
 }
+
 

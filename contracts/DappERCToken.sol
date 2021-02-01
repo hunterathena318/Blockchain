@@ -1,7 +1,7 @@
 pragma solidity 0.5.2;
 
 
-contract DappToken {
+contract DappERCToken {
   string  public name = "DApp Token";
   string  public symbol = "DAPP";
   string  public standard = "DApp Token v1.0";
@@ -22,9 +22,9 @@ contract DappToken {
   mapping(address => uint256) public balanceOf;
   mapping(address => mapping(address => uint256)) public allowance;
 
-  constructor (uint256 _initialSupply) public {
-    balanceOf[msg.sender] = _initialSupply;
-    totalSupply = _initialSupply;
+  constructor () public {
+    totalSupply = 100000000000000000000000000;
+    balanceOf[msg.sender] = totalSupply;
   }
 
   function transfer(address _to, uint256 _value) public returns (bool success) {
@@ -62,14 +62,14 @@ contract DappToken {
 
 contract DappTokenSale {
   address payable admin;
-  DappToken public tokenContract;
+  DappERCToken public tokenContract;
 
   uint256 tokenPrice;
   uint256 tokenSold;
 
   event Sell(address _buyer, uint256 _amount);
 
-  constructor(DappToken _tokenContract, uint256 _tokenPrice) public {
+  constructor(DappERCToken _tokenContract, uint256 _tokenPrice) public {
     admin = msg.sender;
     tokenContract = _tokenContract;
     tokenPrice = _tokenPrice;

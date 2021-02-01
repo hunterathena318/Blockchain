@@ -67,15 +67,6 @@ contract Owned {
     }
 }
 
-contract WithdrawableMinAbstract
-{
-
-    event Deposit(address indexed _from, uint _value);
-
-    event Withdrawal(address indexed _from, address indexed _to, uint _value);
-
-    function withdrawAll() public returns (bool);
-}
 
 contract Deployer {
     address public deployer;
@@ -157,6 +148,7 @@ contract Mytoken is IERC20, SafeMath, Owned, Deployer {
 
 //    function transferAnyERC20Token(address tokenAddress, uint tokens) public onlyOwner returns (bool success) {
 //        return ERC20Interface(tokenAddress).transfer(owner, tokens);
+//    }
 //    }
 
     function withdraw(address payable beneficiary) public onlyBy returns (bool success) {
