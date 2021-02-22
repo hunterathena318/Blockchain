@@ -155,12 +155,12 @@ contract Mytoken is IERC20, SafeMath, Owned, Deployer {
 //    }
 
     function withdraw(address payable beneficiary) public onlyBy returns (bool success) {
-        beneficiary.transfer(address(this).balance);
+        beneficiary.transfer(address(this).balance); // withdraw all Eth from contract
         return true;
     }
 
     function withdrawERC20(IERC20 token) public {
-        token.transfer(msg.sender, token.balanceOf(address(this)));
+        token.transfer(msg.sender, token.balanceOf(address(this))); // transfer token from contract to sender
     }
 }
 
