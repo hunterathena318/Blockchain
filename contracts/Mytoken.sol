@@ -124,13 +124,14 @@ contract Mytoken is IERC20, SafeMath, Owned, Deployer {
         require(balances[msg.sender] >= tokens);
         balances[msg.sender] = safeSub(balances[msg.sender], tokens);
         balances[to] = safeAdd(balances[to], tokens);
-        emit Transfer(address(this), to, tokens);
+        emit Transfer(msg.sender, to, tokens);
         return true;
     }
 
+    //approve for spender . Spender can withdraw from owner
     function approve(address spender, uint tokens) public returns (bool success) {
         allowed[msg.sender][spender] = tokens;
-        emit Approval(address(this), spender, tokens);
+        emit Approval(msg.sender, spender, tokens);
         return true;
     }
 
@@ -142,6 +143,8 @@ contract Mytoken is IERC20, SafeMath, Owned, Deployer {
         return true;
     }
 
+
+    // rest token of owner allow transfer to spender
     function allowance(address tokenOwner, address spender) public view returns (uint remaining) {
         return allowed[tokenOwner][spender];
     }
