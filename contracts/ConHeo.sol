@@ -21,32 +21,29 @@ contract ConHeo {
   address public owner;
   uint releaseTime;
 
-  mapping(address => uint256) tokenBalances;
   mapping(address => uint256) ethBalances;
   mapping(address => mapping (address => uint)) tokens;
 
-  event Deposit(address token, address sender, uint amount);
-  event Withdraw(address token, address sender, uint amount);
+  event Deposit(address indexed token, address indexed sender, uint amount);
+  event WithdrawToken(address indexed token, address indexed sender, uint amount);
+  event WithdrawEth(address indexed sender, uint amount);
 
   constructor() public {
-    //0x4de0EE5879ff666760366F8eC65776019F5343C5 ConHeoContract
-    //Pig token : 0x41665ed27f42e8e29bc701cb28e73ea3b2715105
     owner = msg.sender;
-    releaseTime = now + 5 minutes;
+    releaseTime = now + 30 minutes;
   }
 
   function () external payable {
-    require(msg.value >= 0, "not enough ether");
+    require(msg.value > 0, "not enough ether");
     ethBalances[msg.sender] += msg.value;
   }
 
   function deposit(address tokenAddress, uint amount) public {
     ERC20Interface token = ERC20Interface(tokenAddress);
-    // todo: token.approve(address(this), token amount);
     require(token.allowance(msg.sender, address(this)) >= amount, "token not allow transfer");
-    (bool success) = token.transferFrom(msg.sender, address(this), amount);
-    require(success, "transfer not success");
-    tokenBalances[msg.sender] += amount;
+    require(token.transferFrom(msg.sender, address(this), amount), "transfer not success");
+    tokens[tokenAddress][msg.sender] += amount;
+    emit Deposit(tokenAddress, msg.sender, amount);
   }
 
   function balanceOf(address tokenAddress, address tkOwner) public view returns (uint balance) {
@@ -54,19 +51,22 @@ contract ConHeo {
     return token.balanceOf(tkOwner);
   }
 
-  function withdraw(uint amount) public {
+  function withdrawETH(uint amount) public {
+    require(releaseTime < now, "time invalid");
     require(amount > 0 && amount <= ethBalances[msg.sender], "amount not valid");
     ethBalances[msg.sender] -= amount;
     (msg.sender).transfer(amount);
+    emit WithdrawEth(msg.sender, amount);
   }
 
   function withdrawERC(address tokenAddress, uint amount) public {
     ERC20Interface token = ERC20Interface(tokenAddress);
     require(releaseTime < now, "time invalid");
-    require(amount <= tokenBalances[msg.sender], "not enough amount");
-    tokenBalances[msg.sender] -= amount;
+    require(amount <= tokens[tokenAddress][msg.sender], "not enough amount");
+    tokens[tokenAddress][msg.sender] -= amount;
     (bool success) =  token.transfer(msg.sender, amount);
     require(success, "transfer not success");
+    emit WithdrawToken(tokenAddress, msg.sender, amount);
   }
 
 }

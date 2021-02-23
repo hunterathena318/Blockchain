@@ -1,5 +1,5 @@
-require('dotenv').config();
 const HDWalletProvider = require("@truffle/hdwallet-provider");
+require('dotenv').config();
 
 module.exports = {
   // for more about customizing your Truffle configuration!
